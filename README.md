@@ -11,7 +11,7 @@
   * Your Application is treating the data concurrently therefore the order is not ensured.
 
 ## Installation
-  * Add `barenboim` to your list of dependencies in `mix.exs`:
+  Add `barenboim` to your list of dependencies in `mix.exs`:
 
     ```elixir
     def deps do
@@ -20,7 +20,7 @@
     ```
     
 ## Configuration    
-  * Barenboim uses [poolboy](https://github.com/devinus/poolboy) and you can configure it depending on your needs:
+  Barenboim uses [poolboy](https://github.com/devinus/poolboy) and you can configure it depending on your needs:
 
     ```elixir
     config :barenboim,
@@ -55,7 +55,7 @@
     Barenboim.notify({dependency_id, dependency_data})
   ```
 ## Test
-  * Run the tests.
+  Run the tests.
   ```bash
   mix test 
   ```
