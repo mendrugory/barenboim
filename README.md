@@ -48,11 +48,11 @@
 
   Meanwhile, the flow that is processing a new event has to `notify` when the data is available for others.
   ```elixir
-    Barenboim.notify(dependency_id)
+  Barenboim.notify(dependency_id)
   ```
   Or you can even attach the data:
   ```elixir
-    Barenboim.notify({dependency_id, dependency_data})
+  Barenboim.notify({dependency_id, dependency_data})
   ```
 ## Test
   Run the tests.
