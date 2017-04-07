@@ -11,12 +11,12 @@ defmodule Barenboim do
   ### Configuration
   `Barenboim` uses [poolboy](https://github.com/devinus/poolboy) and you can configure it depending on your needs:
 
-    ```elixir
-    config :barenboim,
-      pool_domain: :global,     # default :local
-      pool_size: 20,            # default 10
-      max_overflow: 3           # default 5
-    ```
+  ```elixir
+  config :barenboim,
+    pool_domain: :global,     # default :local
+    pool_size: 20,            # default 10
+    max_overflow: 3           # default 5
+  ```
 
   You can also configure a delay for a reminder notification. A reminder notification is sent in order to
   avoid corner cases (notification between the data access and the registration of a dependency).
@@ -37,11 +37,11 @@ defmodule Barenboim do
 
   Meanwhile, the flow that is processing a new event has to `notify` when the data is available for others:
   ```elixir
-    Barenboim.notify(dependency_id)
+  Barenboim.notify(dependency_id)
   ```
   Or you can even attach the data:
   ```elixir
-    Barenboim.notify({dependency_id, dependency_data})
+  Barenboim.notify({dependency_id, dependency_data})
   ```
   """
 
@@ -83,13 +83,13 @@ defmodule Barenboim do
   it will return `{:timeout, data}` where data will be the returned data of `fun` at that moment. If no `time_to_live` is specified, or a not valid one,
   `Barenboim` will wait until the event arrives.
 
-    ```elixir
-    fun = fn(dependency_id) -> MyDataModule.get(dependency_id) end
-    case Barenboim.get_data(dependency_id, fun) do
-      {:ok, data} -> process(data)
-      {:timeout, empty_data} -> go_on()
-    end
-    ```
+  ```elixir
+  fun = fn(dependency_id) -> MyDataModule.get(dependency_id) end
+  case Barenboim.get_data(dependency_id, fun) do
+    {:ok, data} -> process(data)
+    {:timeout, empty_data} -> go_on()
+  end
+  ```
   """
   @spec get_data(any, ((any) -> any), integer | nil) :: {:ok, any} | {:timeout, any}
   def get_data(dependency_id, fun, time_to_live \\ nil) do
