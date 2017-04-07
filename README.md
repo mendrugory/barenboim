@@ -1,6 +1,5 @@
 # Barenboim
 
-# Conejo
 
 [![hex.pm](https://img.shields.io/hexpm/v/barenboim.svg?style=flat-square)](https://hex.pm/packages/barenboim) [![hexdocs.pm](https://img.shields.io/badge/docs-latest-green.svg?style=flat-square)](https://hexdocs.pm/barenboim/) [![Build Status](https://travis-ci.org/mendrugory/barenboim.svg?branch=master)](https://travis-ci.org/mendrugory/barenboim)
 
