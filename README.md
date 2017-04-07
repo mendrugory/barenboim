@@ -22,21 +22,21 @@
 ## Configuration    
   Barenboim uses [poolboy](https://github.com/devinus/poolboy) and you can configure it depending on your needs:
 
-    ```elixir
-    config :barenboim,
-      pool_domain: :global,     # default :local
-      pool_size: 20,            # default 10
-      max_overflow: 3           # default 5
-    ```
+  ```elixir
+  config :barenboim,
+    pool_domain: :global,     # default :local
+    pool_size: 20,            # default 10
+    max_overflow: 3           # default 5
+  ```
     
   You can also configure a delay for a reminder notification. A reminder notification is sent in order to
   avoid corner cases (notification between the data access and the registration of a dependency). 
   This time (milliseconds) should be defined depending on your data access function time (see next section).
   
-    ```elixir
-    config :barenboim,
-      reminder_time: 50     # default 100
-    ```
+  ```elixir
+  config :barenboim,
+    reminder_time: 50     # default 100
+  ```
 
 ## How to use it
   Define the function that will retrieve the dependency data where `dependency_id` is the id of your data
