@@ -5,6 +5,9 @@ defmodule Barenboim.Workers.Worker do
   alias Barenboim.Cache.Dependencies
 
 
+  @second_notification_delay            100
+
+
   #######
   # API #
   #######
@@ -19,19 +22,29 @@ defmodule Barenboim.Workers.Worker do
   #############
 
   def init(_) do
-    {:ok, %{}}
+    reminder_time = Application.get_env(:barenboim, :reminder_time) || @second_notification_delay
+    {:ok, %{reminder_time: reminder_time}}
   end
 
-  def handle_cast({:add, depend, dependent, time_to_live}, state) do
-    unless is_nil(time_to_live), do: Process.send_after(self(), {:delete, depend}, time_to_live)
+  def handle_cast({:add, dependency, dependent, time_to_live}, state) do
+    unless is_nil(time_to_live), do: Process.send_after(self(), {:delete, dependency}, time_to_live)
     Task.Supervisor.start_child(
       Barenboim.Workers.WorkerTaskSupervisor,
-      fn -> add(depend, dependent) end
+      fn -> add(dependency, dependent) end
     )
     {:noreply, state}
   end
 
-  def handle_cast({:ready, dependency}, state) do
+  def handle_cast({:ready, dependency}, %{reminder_time: reminder_time} = state) do
+    Process.send_after(self(), {:ready, dependency}, reminder_time)
+    Task.Supervisor.start_child(
+      Barenboim.Workers.WorkerTaskSupervisor,
+      fn -> ready(dependency) end
+    )
+    {:noreply, state}
+  end
+
+  def handle_info({:ready, dependency}, state) do
     Task.Supervisor.start_child(
       Barenboim.Workers.WorkerTaskSupervisor,
       fn -> ready(dependency) end
@@ -56,23 +69,23 @@ defmodule Barenboim.Workers.Worker do
   # PRIVATE #
   ###########
 
-  defp add([dependency | dependencies], dependent) do
-    add(dependency, dependent)
-    add(dependencies, dependent)
-  end
-
-  defp add([], _dependent) do
-    :empty
-  end
-
   defp add(dependency, dependent) do
     Dependencies.insert(dependency, dependent)
   end
 
-  defp ready(dependency) do
-    dependents = Dependencies.get_dependents(dependency)
-    Enum.each(dependents, fn dependent -> send(dependent, {:ready, dependency}) end)
-    delete(dependency)
+  defp ready({dependency_id, _dependency_data} = dependency) do
+    communicate_dependents(dependency_id, dependency)
+  end
+
+  defp ready(dependency_id) do
+    communicate_dependents(dependency_id, dependency_id)
+  end
+
+  defp communicate_dependents(dependency_id, communication_data) do
+    dependency_id
+    |> Dependencies.get_dependents()
+    |> Enum.each(fn dependent -> send(dependent, {:ready, communication_data}) end)
+    delete(dependency_id)
   end
 
   defp delete([dependency | dependencies]) do

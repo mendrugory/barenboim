@@ -30,7 +30,7 @@ defmodule Barenboim.Cache.Dependencies do
 
   @doc """
   It deletes all the given dependency/dependencies.
-  **depend* can be a dependency or a list of dependencies.
+  *depend* can be a dependency or a list of dependencies.
   """
   def delete(depend) do
      Cache.delete(@table_name, depend)

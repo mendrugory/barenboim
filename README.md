@@ -29,6 +29,15 @@
       pool_size: 20,            # default 10
       max_overflow: 3           # default 5
     ```
+    
+  You can also configure a delay for a reminder notification. A reminder notification is sent in order to
+  avoid corner cases (notification between the data access and the registration of a dependency). 
+  This time (milliseconds) should be defined depending on your data access function time (see next section).
+  
+    ```elixir
+    config :barenboim,
+      reminder_time: 50     # default 100
+    ```
 
 ## How to use it
   Define the function that will retrieve the dependency data where `dependency_id` is the id of your data
@@ -38,11 +47,14 @@
   {:ok, data} = Barenboim.get_data(dependency_id, fun)
   ```
 
-  Meanwhile, the flow that is processing a new event has to call `ready` function when the data is available for others.
+  Meanwhile, the flow that is processing a new event has to `notify` when the data is available for others.
   ```elixir
-    Barenboim.ready(dependency_id)
+    Barenboim.notify(dependency_id)
   ```
-  
+  Or you can even attach the data:
+  ```elixir
+    Barenboim.notify({dependency_id, dependency_data})
+  ```
 ## Test
   * Run the tests.
   ```bash
