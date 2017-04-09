@@ -39,20 +39,20 @@
   ```
 
 ## How to use it
-  Define the function that will retrieve the dependency data where `dependency_id` is the id of your data
+  Define the function that will retrieve the dependency data where `dependency_ref` is the reference of your data
   and call `Barenboim.get_data`. You can also specify a time out in milliseconds.
   ```elixir
-  fun = fn(dependency_id) -> MyDataModule.get(dependency_id) end
-  {:ok, data} = Barenboim.get_data(dependency_id, fun)
+  fun = fn(dependency_ref) -> MyDataModule.get(dependency_ref) end
+  {:ok, data} = Barenboim.get_data(dependency_ref, fun)
   ```
 
   Meanwhile, the flow that is processing a new event has to `notify` when the data is available for others.
   ```elixir
-  Barenboim.notify({:reference, dependency_id})
+  Barenboim.notify({:reference, dependency_ref})
   ```
   Or you can even attach the data:
   ```elixir
-  Barenboim.notify({:data, dependency_id, dependency_data})
+  Barenboim.notify({:data, dependency_ref, dependency_data})
   ```
 ## Test
   Run the tests.

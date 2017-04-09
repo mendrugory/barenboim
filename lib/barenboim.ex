@@ -28,20 +28,20 @@ defmodule Barenboim do
   ```
 
   ### How to use it
-  Define the function that will retrieve the dependency data where `dependency_id` is the id of your data
+  Define the function that will retrieve the dependency data where `dependency_ref` is the id of your data
   and call `Barenboim.get_data`. You can also specify a time out in milliseconds.
   ```elixir
-  fun = fn(dependency_id) -> MyDataModule.get(dependency_id) end
-  {:ok, data} = Barenboim.get_data(dependency_id, fun)
+  fun = fn(dependency_ref) -> MyDataModule.get(dependency_ref) end
+  {:ok, data} = Barenboim.get_data(dependency_ref, fun)
   ```
 
   Meanwhile, the flow that is processing a new event has to `notify` when the data is available for others:
   ```elixir
-  Barenboim.notify({:reference, dependency_id})
+  Barenboim.notify({:reference, dependency_ref})
   ```
   Or you can even attach the data:
   ```elixir
-  Barenboim.notify({:data, dependency_id, dependency_data})
+  Barenboim.notify({:data, dependency_ref, dependency_data})
   ```
   """
 
@@ -56,8 +56,8 @@ defmodule Barenboim do
   @doc """
   It has to be called when the data dependency is ready to be used by its dependents.
 
-  The argument can be the reference of the dependency or a tuple with the reference of the dependency and
-  the dependency data.
+  The argument can be a tuple with the atom `:reference` and the reference of the dependency or a tuple with the atom `:data`,
+  the reference of the dependency and the dependency data.
   """
   @spec notify({:reference, any} | {:data, any, any}) :: any
   def notify(dependency) do
@@ -68,9 +68,9 @@ defmodule Barenboim do
   @doc """
   This function will return the dependency data when is ready.
 
-  * `dependency_id` is the reference of the dependency data
+  * `dependency_ref` is the reference of the dependency data
   * `fun` is the function that will get the dependency data. If you don't need the data in that moment, only ensure that the data is ready,
-  your `fun` function could only be a data checker `fn(dependency) -> MyDataModule.exist(dependency) end`. `Barenboim` will consider a ready data
+  your `fun` function could only be a data checker `fn(dependency_ref) -> MyDataModule.exist(dependency_ref) end`. `Barenboim` will consider a ready data
   when executing `fun` it retrieves a value different than:
     * `nil`
     * `false`
@@ -84,17 +84,17 @@ defmodule Barenboim do
   `Barenboim` will wait until the event arrives.
 
   ```elixir
-  fun = fn(dependency_id) -> MyDataModule.get(dependency_id) end
-  case Barenboim.get_data(dependency_id, fun) do
+  fun = fn(dependency_ref) -> MyDataModule.get(dependency_ref) end
+  case Barenboim.get_data(dependency_ref, fun) do
     {:ok, data} -> process(data)
     {:timeout, empty_data} -> go_on()
   end
   ```
   """
   @spec get_data(any, ((any) -> any), integer | nil) :: {:ok, any} | {:timeout, any}
-  def get_data(dependency_id, fun, time_to_live \\ nil) do
-    data = fun.(dependency_id)
-    if is_data(data), do: {:ok, data}, else: wait_and_get(dependency_id, fun, time_to_live)
+  def get_data(dependency_ref, fun, time_to_live \\ nil) do
+    data = fun.(dependency_ref)
+    if is_data(data), do: {:ok, data}, else: wait_and_get(dependency_ref, fun, time_to_live)
   end
 
 

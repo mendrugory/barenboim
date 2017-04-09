@@ -73,19 +73,19 @@ defmodule Barenboim.Workers.Worker do
     Dependencies.insert(dependency, dependent)
   end
 
-  defp ready({:data, dependency_id, _dependency_data} = dependency) do
-    communicate_dependents(dependency_id, dependency)
+  defp ready({:data, dependency_ref, _dependency_data} = dependency) do
+    communicate_dependents(dependency_ref, dependency)
   end
 
-  defp ready({:reference, dependency_id} = dependency) do
-    communicate_dependents(dependency_id, dependency)
+  defp ready({:reference, dependency_ref} = dependency) do
+    communicate_dependents(dependency_ref, dependency)
   end
 
-  defp communicate_dependents(dependency_id, communication_data) do
-    dependency_id
+  defp communicate_dependents(dependency_ref, communication_data) do
+    dependency_ref
     |> Dependencies.get_dependents()
     |> Enum.each(fn dependent -> send(dependent, {:ready, communication_data}) end)
-    delete(dependency_id)
+    delete(dependency_ref)
   end
 
   defp delete([dependency | dependencies]) do
