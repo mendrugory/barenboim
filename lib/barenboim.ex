@@ -37,7 +37,7 @@ defmodule Barenboim do
 
   Meanwhile, the flow that is processing a new event has to `notify` when the data is available for others:
   ```elixir
-  Barenboim.notify({:referece, dependency_id})
+  Barenboim.notify({:reference, dependency_id})
   ```
   Or you can even attach the data:
   ```elixir
