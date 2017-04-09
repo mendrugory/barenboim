@@ -37,11 +37,11 @@ defmodule Barenboim do
 
   Meanwhile, the flow that is processing a new event has to `notify` when the data is available for others:
   ```elixir
-  Barenboim.notify(dependency_id)
+  Barenboim.notify({:referece, dependency_id})
   ```
   Or you can even attach the data:
   ```elixir
-  Barenboim.notify({dependency_id, dependency_data})
+  Barenboim.notify({:data, dependency_id, dependency_data})
   ```
   """
 
@@ -59,7 +59,7 @@ defmodule Barenboim do
   The argument can be the reference of the dependency or a tuple with the reference of the dependency and
   the dependency data.
   """
-  @spec notify(any | {any, any}) :: any
+  @spec notify({:reference, any} | {:data, any, any}) :: any
   def notify(dependency) do
     :poolboy.transaction(:barenboim_pool, fn pid -> GenServer.cast(pid, {:ready, dependency}) end)
   end
@@ -119,8 +119,8 @@ defmodule Barenboim do
 
   defp recv(dependency, fun, time_out, waiting_forever) do
     receive do
-      {:ready, ^dependency} -> {:ok, fun.(dependency)}
-      {:ready, {^dependency, dependency_data}} -> {:ok, dependency_data}
+      {:ready, {:reference, ^dependency}} -> {:ok, fun.(dependency)}
+      {:ready, {:data, ^dependency, dependency_data}} -> {:ok, dependency_data}
     after
       time_out ->
         data = fun.(dependency)
@@ -135,7 +135,7 @@ defmodule Barenboim do
     if waiting_forever do
       recv(dependency, fun, time_out, waiting_forever)
     else
-      {:time_out, fun.(dependency)}
+      {:timeout, fun.(dependency)}
     end
   end
 

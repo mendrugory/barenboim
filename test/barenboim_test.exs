@@ -34,13 +34,13 @@ defmodule BarenboimTest do
     table_name = :test4
     {fun, event_producer} = Helper.get_init_common_data(table_name)
     DelayEventProducer.produce_delayed_event_with_notification(event_producer, 4, 5, 5000)
-    assert Barenboim.get_data(4, fun, 3000) == {:time_out, []}
+    assert Barenboim.get_data(4, fun, 3000) == {:timeout, []}
   end
 
   test "wait 5 seconds for an event which will never arrive" do
     table_name = :test5
     {fun, _event_producer} = Helper.get_init_common_data(table_name)
-    assert Barenboim.get_data(9999, fun, 5000) == {:time_out, []}
+    assert Barenboim.get_data(9999, fun, 5000) == {:timeout, []}
   end
 
   test "wait for the data of an event which will arrive in 5 seconds" do
@@ -61,7 +61,7 @@ defmodule BarenboimTest do
     table_name = :test8
     {fun, event_producer} = Helper.get_init_common_data(table_name)
     DelayEventProducer.produce_delayed_event_with_data(event_producer, 7, 8, 5000)
-    assert Barenboim.get_data(7, fun, 3000) == {:time_out, []}
+    assert Barenboim.get_data(7, fun, 3000) == {:timeout, []}
   end
 
   test "notification between the data checking and the dependency adding" do

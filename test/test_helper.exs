@@ -23,18 +23,18 @@ defmodule DelayEventProducer do
 
   def handle_info({:event_notification, key, value}, state) do
     Barenboim.Cache.Cache.insert(state[:table], {key, value})
-    Barenboim.notify(key)
+    Barenboim.notify({:reference, key})
     {:noreply, state}
   end
 
   def handle_info({:event_data, key, value}, state) do
     Barenboim.Cache.Cache.insert(state[:table], {key, value})
-    Barenboim.notify({key, value})
+    Barenboim.notify({:data, key, value})
     {:noreply, state}
   end
 
   def handle_info({:event_data_no_save, key, value}, state) do
-    Barenboim.notify({key, value})
+    Barenboim.notify({:data, key, value})
     {:noreply, state}
   end
 end

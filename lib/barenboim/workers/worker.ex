@@ -73,12 +73,12 @@ defmodule Barenboim.Workers.Worker do
     Dependencies.insert(dependency, dependent)
   end
 
-  defp ready({dependency_id, _dependency_data} = dependency) do
+  defp ready({:data, dependency_id, _dependency_data} = dependency) do
     communicate_dependents(dependency_id, dependency)
   end
 
-  defp ready(dependency_id) do
-    communicate_dependents(dependency_id, dependency_id)
+  defp ready({:reference, dependency_id} = dependency) do
+    communicate_dependents(dependency_id, dependency)
   end
 
   defp communicate_dependents(dependency_id, communication_data) do
