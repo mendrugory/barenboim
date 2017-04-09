@@ -15,7 +15,7 @@
 
   ```elixir
   def deps do
-    [{:barenboim, "~> 0.1.0"}]
+    [{:barenboim, "~> 0.3.0"}]
   end
   ```
     
