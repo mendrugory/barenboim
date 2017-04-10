@@ -2,9 +2,8 @@ defmodule Barenboim do
   @moduledoc """
   `Barenboim` is prepared to tackle with data streaming dependencies in concurrent flows.
 
-  If your application works with a data streaming and your incoming events could have dependencies between them, the app can have problems about when the
-  dependency data is ready. Reasons:
-  * The Application which is sending the data is not sending the data in the right order
+  If your application works with a data streaming and your incoming events could have dependencies between them, the app can have problems when:
+  * The Application which is sending the data is not sending the data in the right order.
   * Your Application is treating the data concurrently therefore the order is not ensured.
 
 
