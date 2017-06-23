@@ -6,4 +6,4 @@
 erl_crash.dump
 *.ez
 *.iml
-
+.elixir_ls
