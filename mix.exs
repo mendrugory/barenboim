@@ -1,12 +1,12 @@
 defmodule Barenboim.Mixfile do
   use Mix.Project
 
-  @version "0.3.0"
+  @version "0.3.1"
 
   def project do
     [app: :barenboim,
      version: @version,
-     elixir: "~> 1.4",
+     elixir: "~> 1.5",
      package: package(),
      description: "Barenboim helps you with data streaming dependencies in concurrent flows",
      build_embedded: Mix.env == :prod,
